@@ -1,15 +1,23 @@
 FROM ubuntu:14.04
 
-MAINTAINER Anthony Scinocco <scinocco.a@gmail.com> Version 0.1
+MAINTAINER Anthony Scinocco <scinocco.a@gmail.com> Version: 0.1
 
-# get packages
-RUN apt-get update -y
-RUN apt-get install -y python-pip apache2 libapache2-mod-wsgi
-RUN pip install virtualenv
-RUN mkdir /var/www/python_uuid && virtualenv python_uuid_env && source python_uuid_env/bin/activate && \
-    pip install django && django-admin.py startproject python_uuid .
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y apache2 python-setuptools libapache2-mod-wsgi python-webpy
+RUN mkdir /var/www/html/python_uuid.com && mkdir /var/www/html/python_uuid.com/application && \
+    mkdir /var/www/html/python_uuid.com/application/public
 
-COPY ./settings.py /var/www/python_uuid/python_uuid_env
+COPY ./app/application.wsgi /var/www/html/python_uuid.com/application
+COPY ./app/application.py /var/www/html/python_uuid.com/application
+COPY ./sites-available/000-default.conf /etc/apache2/sites-available/
 
-RUN /var/www/python_uuid/python_uuid_env/./manage.py makemigrations && \
-    /var/www/python_uuid/python_uuid_env/./manage.py migrate
+# set apache env
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/lock
+ENV APACHE_PID_FILE /var/run/apache2
+
+EXPOSE 80
+
+RUN service apache2 restart
