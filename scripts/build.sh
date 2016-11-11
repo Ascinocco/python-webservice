@@ -2,7 +2,7 @@
 PATH_TO_APP="/Users/anthony/Documents/Personal/Projects/niall-challenge/python-webservice/app"
 
 docker stop $(docker ps -a -q)
-docker rm $(socker ps -a -q)
+docker rm $(docker ps -a -q)
 
 docker build -t anthonyscinocco/python-uuid:webpy .
 
