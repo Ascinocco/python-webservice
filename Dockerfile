@@ -9,13 +9,16 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y apache2 python-setuptools libapache2-mod-wsgi python-webpy
 
 # make application direcotories
-RUN mkdir /var/www/html/python_uuid.com && mkdir /var/www/html/python_uuid.com/application && \
-    mkdir /var/www/html/python_uuid.com/application/public
+RUN mkdir -p /var/www/html/python_uuid.com/application/public
 
 # copy over files
 COPY ./app/application.wsgi /var/www/html/python_uuid.com/application
 COPY ./app/application.py /var/www/html/python_uuid.com/application
+COPY ./app/public/index.html /var/www/html/python_uuid.com/application/public
 COPY ./sites-available/000-default.conf /etc/apache2/sites-available/
+
+# set correct permissions on filestructure
+RUN chown -R www-data:www-data /var/www/html
 
 # set apache env
 ENV APACHE_RUN_USER www-data

@@ -1,17 +1,19 @@
 import web, uuid
 
 urls = (
-    '/', 'uuid_generator'
+    '/', 'GenerateUUID'
 )
 
-# generate uuid
-class uuid_generator:
+
+# Implement Get Method
+class GenerateUUID:
     def GET(self):
-        return 'uuid: ' + str(uuid.uuid4())
+        return str(uuid.uuid4())
 
-# run the app
-if __name__ == "__main__":
-    app.run()
-
+# Configure the web application
 app = web.application(urls, globals(), autoreload=False)
 application = app.wsgifunc()
+
+# Run the Application
+if __name__ == "__main__":
+    app.run()
